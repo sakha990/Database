@@ -1,0 +1,33 @@
+USE [CompareAdmin]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetProductsByCategoryId]    Script Date: 03-08-2016 13:09:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[GetProductsByCategoryId]
+@categoryId AS INT,
+@noOfProductsPerPage   AS INT,
+@currentPageIndex AS INT
+AS
+DECLARE @startRow AS INT;
+BEGIN
+	SET @startRow = @currentPageIndex * @noOfProductsPerPage;
+
+	SELECT p2.productID,p2.productName
+	FROM (SELECT p1.productID,p1.productName,ROW_NUMBER() OVER(ORDER BY p1.productName) AS priceRank 
+		  FROM CompareAdmin.dbo.Products p1 
+		  WHERE categoryID = @categoryId
+		 ) p2 	
+	WHERE p2.priceRank > @startRow  AND p2.priceRank <= @startRow + @noOfProductsPerPage;
+
+END
+
+
+GO
+
+
