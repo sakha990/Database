@@ -1,4 +1,9 @@
 USE CompareAdmin;  
+
+--Login 
+IF OBJECT_ID ('CompareAdmin.dbo.Users', 'U') IS NOT NULL  
+   DROP TABLE CompareAdmin.dbo.Users;  
+
 --Notes
 IF OBJECT_ID ('CompareAdmin.dbo.Notes', 'U') IS NOT NULL  
    DROP TABLE CompareAdmin.dbo.Notes;  
@@ -41,6 +46,13 @@ IF OBJECT_ID ('CompareAdmin.dbo.Brands', 'U') IS NOT NULL
 
 GO  
 
+CREATE TABLE CompareAdmin.dbo.Users (
+userName		VARCHAR(20) NOT NULL,
+password		VARCHAR(20) NOT NULL,
+realName		VARCHAR(100) NOT NULL,
+CONSTRAINT pk_Users PRIMARY KEY(userName)
+);
+
 CREATE TABLE CompareAdmin.dbo.Notes (
 noteID			SMALLINT IDENTITY(1,1),
 noteText		VARCHAR(500),	
@@ -66,17 +78,17 @@ CONSTRAINT unique_Categories UNIQUE(categoryName,parentCategoryName),
 CONSTRAINT pk_Categories PRIMARY KEY(categoryID)
 );
 
-CREATE TABLE CompareAdmin.dbo.CategoryAttributes (
-categoryAttributesID INT IDENTITY(1,1),
+CREATE TABLE CompareAdmin.dbo.CategoryParameters (
+categoryParameterID INT IDENTITY(1,1),
 categoryID			SMALLINT,
-attributeName		NVARCHAR(50) NOT NULL,
-attributeValue		NVARCHAR(200) NOT NULL,
+parameterName		NVARCHAR(50) NOT NULL,
+parameterValues		NVARCHAR(200) NOT NULL,
 createdBy			VARCHAR(10) NOT NULL,
 createdDate			DATETIME NOT NULL,
 lastUpdatedBy			VARCHAR(10),
 lastUpdatedDate			DATETIME ,		
-CONSTRAINT unique_CategoryAttributes UNIQUE(categoryID,attributeName,attributeValue),
-CONSTRAINT pk_CategoryAttributes PRIMARY KEY(categoryAttributesID),
+CONSTRAINT unique_CategoryAttributes UNIQUE(categoryID,parameterName),
+CONSTRAINT pk_CategoryAttributes PRIMARY KEY(categoryParameterID),
 CONSTRAINT fk_CategoryAttributes_CategoryID   FOREIGN KEY (categoryID) REFERENCES Categories(categoryID)
 );
 
